@@ -1,0 +1,13 @@
+# Unreal Engine / Visual Studio / IDE folders
+.vs/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vscode/
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.log

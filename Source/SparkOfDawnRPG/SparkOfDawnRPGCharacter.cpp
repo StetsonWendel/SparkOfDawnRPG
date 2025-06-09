@@ -50,10 +50,17 @@ ASparkOfDawnRPGCharacter::ASparkOfDawnRPGCharacter()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ASparkOfDawnRPGCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ASparkOfDawnRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// Set up gameplay key bindings
-	check(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
+    UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent called!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+
+	PlayerInputComponent->BindAction("LightAttack", IE_Pressed, this, &ASparkOfDawnRPGCharacter::LightAttack);
+	PlayerInputComponent->BindAction("HeavyAttack", IE_Pressed, this, &ASparkOfDawnRPGCharacter::HeavyAttack);
+
+	PlayerInputComponent->BindAction("SwitchToMelee", IE_Pressed, this, &ASparkOfDawnRPGCharacter::SwitchToMelee);
+	PlayerInputComponent->BindAction("SwitchToRanged", IE_Pressed, this, &ASparkOfDawnRPGCharacter::SwitchToRanged);
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -137,4 +144,66 @@ void ASparkOfDawnRPGCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ASparkOfDawnRPGCharacter::LightAttack()
+{
+    if (EquippedMeleeWeapon)
+    {
+        // Play melee light attack animation
+        UE_LOG(LogTemp, Warning, TEXT("Light melee attack!"));
+
+        // Example: do a collision sweep here to damage enemies
+    }
+}
+
+void ASparkOfDawnRPGCharacter::HeavyAttack()
+{
+    if (EquippedMeleeWeapon)
+    {
+        // Play melee heavy attack animation
+        UE_LOG(LogTemp, Warning, TEXT("Heavy melee attack!"));
+
+        // Example: do a bigger collision sweep, more damage
+    }
+}
+
+void ASparkOfDawnRPGCharacter::AddItemToInventory(FInventoryItem NewItem)
+{
+    Inventory.Add(NewItem);
+    UE_LOG(LogTemp, Warning, TEXT("Added item: %s"), *NewItem.Name);
+}
+
+void ASparkOfDawnRPGCharacter::SwitchToMelee()
+{
+    if (EquippedMeleeWeapon)
+    {
+        // Logic to show/hide weapons or set active weapon mesh
+        UE_LOG(LogTemp, Warning, TEXT("Switched to melee weapon."));
+    }
+}
+
+void ASparkOfDawnRPGCharacter::SwitchToRanged()
+{
+    if (EquippedRangedWeapon)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Switched to ranged weapon."));
+    }
+}
+
+void ASparkOfDawnRPGCharacter::EquipWeapon(AActor*& WeaponSlot, TSubclassOf<AActor> WeaponClass)
+{
+    if (WeaponSlot)
+    {
+        WeaponSlot->Destroy(); // remove old
+    }
+
+    FActorSpawnParameters SpawnParams;
+    WeaponSlot = GetWorld()->SpawnActor<AActor>(WeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+    if (WeaponSlot)
+    {
+        WeaponSlot->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket")); // Use your socket name!
+        UE_LOG(LogTemp, Warning, TEXT("Equipped new weapon!"));
+    }
 }

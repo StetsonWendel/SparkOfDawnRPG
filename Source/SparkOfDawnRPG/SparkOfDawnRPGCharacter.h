@@ -7,7 +7,7 @@
 #include "SparkOfDawnRPGCharacter.generated.h"
 
 UCLASS(config=Game)
-class ASparkOfDawnRPGCharacter : public ACharacter
+class SPARKOFDAWNRPG_API ASparkOfDawnRPGCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -68,5 +68,30 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	// Weapon references
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	AActor* EquippedMeleeWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	AActor* EquippedRangedWeapon;
+
+	// Inventory
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
+	TArray<FInventoryItem> Inventory;
+
+	// Attack inputs
+	void LightAttack();
+	void HeavyAttack();
+
+	// Switching weapons
+	void SwitchToMelee();
+	void SwitchToRanged();
+
+	// Example function to loot an item and add to inventory
+	void AddItemToInventory(FInventoryItem NewItem);
+
+	// Helper to spawn weapons
+	void EquipWeapon(AActor*& WeaponSlot, TSubclassOf<AActor> WeaponClass);
 };
 
